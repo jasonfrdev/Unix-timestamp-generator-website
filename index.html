@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unix Timestamp Rechner</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  .container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    margin-bottom: 10px;
+  }
+  input[type="text"] {
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  #languageButtons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  #ergebnis {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">Unix Timestamp Rechner</h1>
+    <div id="languageButtons">
+      <button id="deBtn" onclick="changeLanguage('de')">Deutsch</button>
+      <button id="enBtn" onclick="changeLanguage('en')">English</button>
+    </div>
+    <form id="timestampForm">
+      <label for="datum" id="datumLabel">Datum (Jahr-Monat-Tag):</label>
+      <input type="text" id="datum" name="datum" placeholder="<?= date('Y-m-d') ?>" value="<?= date('Y-m-d') ?>" required>
+      <label for="uhrzeit" id="uhrzeitLabel">Uhrzeit (Stunde:Minute):</label>
+      <input type="text" id="uhrzeit" name="uhrzeit" placeholder="<?= date('H:i') ?>" value="<?= date('H:i') ?>" required>
+      <button type="submit" id="submitBtn">Timestamp berechnen</button>
+    </form>
+    <div id="ergebnis"></div>
+  </div>
+
+  <script>
+    function changeLanguage(lang) {
+      const title = document.getElementById('title');
+      const datumLabel = document.getElementById('datumLabel');
+      const uhrzeitLabel = document.getElementById('uhrzeitLabel');
+      const submitBtn = document.getElementById('submitBtn');
+      const deBtn = document.getElementById('deBtn');
+      const enBtn = document.getElementById('enBtn');
+
+      if (lang === 'en') {
+        document.documentElement.lang = 'en';
+        title.textContent = 'Unix Timestamp Calculator';
+        datumLabel.textContent = 'Date (Year-Month-Day):';
+        uhrzeitLabel.textContent = 'Time (Hour:Minute):';
+        submitBtn.textContent = 'Calculate Timestamp';
+      } else {
+        document.documentElement.lang = 'de';
+        title.textContent = 'Unix Timestamp Rechner';
+        datumLabel.textContent = 'Datum (Jahr-Monat-Tag):';
+        uhrzeitLabel.textContent = 'Uhrzeit (Stunde:Minute):';
+        submitBtn.textContent = 'Timestamp berechnen';
+      }
+
+      deBtn.classList.toggle('active', lang === 'de');
+      enBtn.classList.toggle('active', lang === 'en');
+    }
+
+    document.getElementById('timestampForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(this);
+      const datum = formData.get('datum');
+      const uhrzeit = formData.get('uhrzeit');
+      const datetime = `${datum} ${uhrzeit}:00`;
+      const unixTimestamp = Math.floor(new Date(datetime).getTime() / 1000);
+      document.getElementById('ergebnis').textContent = `Unix Timestamp: ${unixTimestamp}`;
+    });
+
+    window.onload = function() {
+      const userLang = navigator.language || navigator.userLanguage;
+      if (userLang.startsWith('en')) {
+        changeLanguage('en');
+      } else {
+        changeLanguage('de');
+      }
+      
+      const datumInput = document.getElementById('datum');
+      const uhrzeitInput = document.getElementById('uhrzeit');
+      const currentDate = new Date();
+      const currentDateString = `${currentDate.getFullYear()}-${('0' + (currentDate.getMonth() + 1)).slice(-2)}-${('0' + currentDate.getDate()).slice(-2)}`;
+      const currentTimeString = `${('0' + currentDate.getHours()).slice(-2)}:${('0' + currentDate.getMinutes()).slice(-2)}`;
+      datumInput.placeholder = currentDateString;
+      datumInput.value = currentDateString;
+      uhrzeitInput.placeholder = currentTimeString;
+      uhrzeitInput.value = currentTimeString;
+    };
+  </script>
+</body>
+</html>
